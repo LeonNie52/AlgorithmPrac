@@ -28,24 +28,45 @@ from collections import defaultdict
 class Solution(object):
 
     def maxMapSum(self, input):
+        flag = False
         weightDict = defaultdict(int)
+        headChar = []
         n = input[0]
         for i in range(1, n+1):
+
+            if input[i][0] not in headChar:
+                headChar.append(input[i][0])
+
             for j in range(len(input[i])):
                 weight = len(input[i]) - input[i].index(input[i][j])-1
                 weightDict[input[i][j]] = 10**weight+weightDict[input[i][j]]
+
+        min_Sum = 0
+
+        if len(weightDict) == 10:
+            min_weight = min(weightDict.values())
+
+            for key, value in weightDict.items():
+                if value == min_weight and key in headChar:
+                    min_Sum = weightDict[key]
+                    weightDict.pop(key)
+                    flag = True
+
         weight = weightDict.values()
         weight.sort(reverse=True)
         Max = 9
         Sum = 0
 
+        if flag:
+            weight.pop()
+
         for i in range(len(weight)):
             Sum = Sum+Max*weight[i]
             Max = Max-1
-        return Sum
+        return Sum+min_Sum
 
 if __name__ == '__main__':
     s = Solution()
-    input = [2,'ABC','BCA']
+    input = [2, 'ABC', 'BCA']
 
     print(s.maxMapSum(input))
